@@ -54,6 +54,12 @@ public class HomeController {
 		public static ULoginDetails currentUser =null;
 		public static  String  OTP=null;
 		
+		@GetMapping("/test")
+		public String test() {
+			System.out.println("...........This the Testing Api page from ................. ");
+			return "Testing API page.... ";
+		}
+		
 	@PostMapping("/register")
 	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails) throws UserHander {
 		
