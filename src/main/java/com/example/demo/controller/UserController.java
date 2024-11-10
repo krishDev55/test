@@ -19,7 +19,7 @@ import com.example.demo.globleHandler.UserHander;
 import com.example.demo.service.UserService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(allowCredentials = "http://127.0.0.1:5500/")
 @RequestMapping("/v1/user/")
 public class UserController {
 	@Autowired

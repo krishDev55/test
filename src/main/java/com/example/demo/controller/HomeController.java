@@ -42,7 +42,7 @@ import com.example.demo.service.UserService;
 
 @RestController
 @RequestMapping("/v1/app")
-@CrossOrigin()
+@CrossOrigin(allowCredentials = "http://127.0.0.1:5500")
 public class HomeController {
 	
 	BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
