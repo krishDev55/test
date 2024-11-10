@@ -4,9 +4,12 @@ package com.example.demo.controller;
 import org.json.JSONObject;
 import com.razorpay.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +17,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,9 +45,17 @@ import com.example.demo.service.UserService;
 @CrossOrigin()
 public class HomeController {
 	
+	BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
+	
+	@GetMapping("/")
+	public String home(HttpServletRequest req) {
+		return "This is Home Page ...!!! "+req.getSession().getId();
+	}
+	
 
 		@Autowired
 		ULoginDetailsService details;
+		
 		@Autowired
 		private UserService userService;
 		
@@ -50,8 +63,12 @@ public class HomeController {
 		private ProductService productService;
 	
 		public static  boolean invaite;
-		public static ULoginDetails loginDatailsById;
-		public static ULoginDetails currentUser =null;
+		
+//		public static ULoginDetails loginDatailsById;
+//		public static ULoginDetails currentUser =null;
+		@Autowired
+		static public HttpSession session;
+		
 		public static  String  OTP=null;
 		
 		@GetMapping("/test")
@@ -62,7 +79,7 @@ public class HomeController {
 		
 	@PostMapping("/register")
 	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails) throws UserHander {
-		
+			udetails.setPassword(encoder.encode(udetails.getPassword()));
 		ULoginDetails newRegister = details.newRegister(udetails);
 		
 		return  ResponseEntity.ok(newRegister);
@@ -72,40 +89,54 @@ public class HomeController {
 	public ResponseEntity<Object> invaitUser(@PathVariable Long mobile){
 		System.out.println(mobile);
 		
-		invaite=true;
-		 loginDatailsById = details.getLoginDatailsById(mobile).get();
-					
-					
-					
+//		invaite=true;
+//		 loginDatailsById = details.getLoginDatailsById(mobile).get();					
 		return  ResponseEntity.ok(" invait link Open");
 	}
 	
 	
 	@PostMapping("/login")
-	public ResponseEntity<Object>  login(@RequestBody ULoginDetails udetails) throws UserHander {
-	if(currentUser==null) {
-		currentUser = details.loginChack(udetails);
+	
+	public ResponseEntity<Object>  login(@RequestBody ULoginDetails udetails,HttpSession session1) throws UserHander {
+		session = session1;
+		String username = Long.toString(udetails.getMobile());
+
+		if (ckeckSession(username)) {
+			return ResponseEntity.ok("User is Allready Login");
 		}
-	else{
-		throw new UserHander("User currently  logIn in Another Window");
-	}
-		
-		return ResponseEntity.ok(currentUser);
-				
+			else {
+					String varify = details.varify(udetails);
+			
+					if (varify.equals("fails")) {
+						return ResponseEntity.ok("Pleaase check the valid user Id ");
+					}
+			
+					Map<String, Object> map = new HashMap<>();
+					String mobile = Long.toString(udetails.getMobile());
+					
+					String id = session.getId();
+					System.out.println("session id : " + id);
+					session.setAttribute(mobile, udetails);
+					map.put("token", varify);
+					map.put("user", udetails);
+					return ResponseEntity.ok(map);
+			}				
 	}
 	
-	@GetMapping("/logOut")
-	public ResponseEntity<Object>  logOut() throws UserHander {
-			if(currentUser!=null) {
-				currentUser=null;
-				throw new UserHander("User LogOut Succesesfully");
-			}
+	@GetMapping("/logOut/{mobile}")
+	public ResponseEntity<Object>  logOut(@PathVariable Long mobile) throws UserHander {
+			String mo1=Long.toString(mobile);
 		
+			if(ckeckSession(mo1)) {
+			session.removeAttribute(mo1);
+			ResponseEntity<Object> responseEntity= new ResponseEntity<Object>("User LogOut Succesesfully", HttpStatusCode.valueOf(200));
+			return responseEntity;
+		}
 			throw new UserHander("please logIn First");
 		
 				
 	}
-	
+
 	@PostMapping("/addBankDetails")
 	public ResponseEntity<Object>  saveDetails(@RequestBody UserBankDetails bankDetails)  {
 		System.out.println(bankDetails);
@@ -206,6 +237,8 @@ public class HomeController {
 	@GetMapping("/getProduct")
 	public ResponseEntity<Map<String, Products>> getProduct(){
 		
+		String id = session.getId();
+		System.out.println("session id : "+id);
 		Products product = productService.getProduct();
 		Map<String, Products> map= new HashMap<>();
 		map.put("products", product);
@@ -238,6 +271,19 @@ public class HomeController {
 		
 		return order.toString();
 	}
+	
+	
+	
+	
+	public boolean ckeckSession(String mobile) {
+//		  ULoginDetails
+		ULoginDetails attribute = (ULoginDetails)session.getAttribute(mobile);
+		if(attribute!=null) {
+			return true;
+		}
+		return false;
+			
+		}
 }
 
 

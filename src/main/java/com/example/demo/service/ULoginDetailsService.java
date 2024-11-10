@@ -8,6 +8,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.controller.HomeController;
@@ -17,13 +21,22 @@ import com.example.demo.globleHandler.UserHander;
 import com.example.demo.repository.ULoginDetailsDao;
 import com.example.demo.repository.UserBankDetailsDao;
 
+
+
 @Service
 public class ULoginDetailsService {
 	
 	@Autowired
 	private ULoginDetailsDao uLoginDao;
+	
 	@Autowired
 	private UserBankDetailsDao bankDetailDao;
+	
+	@Autowired
+	AuthenticationManager authManager;
+//	
+	@Autowired
+	private JWTService jwtService;
 	
 		public ULoginDetails newRegister(ULoginDetails details) throws UserHander {
 			
@@ -41,20 +54,20 @@ public class ULoginDetailsService {
 			if(uLogin.isEmpty()) {
 				details.setBonus(50.00);
 				if(HomeController.invaite) {
-					Double bonus = HomeController.loginDatailsById.getBonus();
-					HomeController.loginDatailsById.setBonus(bonus+30);
+//					Double bonus = HomeController.loginDatailsById.getBonus();
+//					HomeController.loginDatailsById.setBonus(bonus+30);
 					save = uLoginDao.save(details);
 					System.out.println("new user register");
 					
-					HomeController.loginDatailsById.setRefer(
-										new ArrayList<Long>(
-														Arrays.asList(
-																details.getMobile()
-												)));
+//					HomeController.loginDatailsById.setRefer(
+//										new ArrayList<Long>(
+//														Arrays.asList(
+//																details.getMobile()
+//												)));
 
-					uLoginDao.save(HomeController.loginDatailsById);
+//					uLoginDao.save(HomeController.loginDatailsById);
 					
-					HomeController.invaite=false;
+//					HomeController.invaite=false;
 				}
 				else{
 					save = uLoginDao.save(details);
@@ -69,7 +82,7 @@ public class ULoginDetailsService {
 		
 		
 		public Optional<ULoginDetails> getLoginDatailsById(Long mobile) {
-			
+		
 			return uLoginDao.findById(mobile);
 		}
 
@@ -156,6 +169,27 @@ public class ULoginDetailsService {
 			}
 			
 			System.out.println("All Data Are Refress");
+		}
+
+
+
+		public String varify(ULoginDetails udetails) {
+			
+			Authentication authenticate = 
+					authManager.authenticate(
+								new UsernamePasswordAuthenticationToken(udetails.getMobile(),udetails.getPassword()));
+			
+					
+						;
+	if(authenticate.isAuthenticated()) {
+		String string = Long.toString(udetails.getMobile());
+		
+		return jwtService.generateToken(string);
+	}		
+	
+	return "fails";
+//			
+//			
 		}
 		
 		
