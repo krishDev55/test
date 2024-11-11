@@ -95,7 +95,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://127.0.0.1:5500"); 
+        configuration.addAllowedOrigin("https://actshopmoney.netlify.app"); 
         configuration.addAllowedMethod("*"); 
         configuration.addAllowedHeader("*"); 
         configuration.setAllowCredentials(true);
