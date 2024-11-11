@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,7 +43,7 @@ import com.example.demo.service.UserService;
 
 @RestController
 @RequestMapping("/v1/app")
-@CrossOrigin(allowCredentials = "http://127.0.0.1:5500")
+@CrossOrigin()
 public class HomeController {
 	
 	BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
@@ -125,12 +126,16 @@ public class HomeController {
 	
 	@GetMapping("/logOut/{mobile}")
 	public ResponseEntity<Object>  logOut(@PathVariable Long mobile) throws UserHander {
+		Map<String, Object> map= new HashMap<>();
+		System.out.println("inside log out method ");
 			String mo1=Long.toString(mobile);
-		
+	
 			if(ckeckSession(mo1)) {
 			session.removeAttribute(mo1);
-			ResponseEntity<Object> responseEntity= new ResponseEntity<Object>("User LogOut Succesesfully", HttpStatusCode.valueOf(200));
-			return responseEntity;
+			map.put("msg", "user logout successfully");
+			
+			System.out.println("user logout successfully");
+			return ResponseEntity.ok(map);
 		}
 			throw new UserHander("please logIn First");
 		

@@ -21,6 +21,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.demo.service.MyUserDetailsService;
 
@@ -44,13 +47,17 @@ public class SecurityConfig {
 				.authorizeHttpRequests(request-> request
 												.requestMatchers(
 																"/v1/app/login",
-																"/v1/app/register").permitAll()
+																"/v1/app/register",
+																"/v1/app/SendOtp/{}").permitAll()
 												.anyRequest().authenticated())
 				.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session-> 
 							session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //				.formLogin(Customizer.withDefaults())
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.cors(cors -> {
+	                cors.configurationSource(corsConfigurationSource());
+	            })
 				.build();
 	}
 
@@ -84,4 +91,17 @@ public class SecurityConfig {
 //		
 //		return new InMemoryUserDetailsManager(user1);
 //	}
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://127.0.0.1:5500"); 
+        configuration.addAllowedMethod("*"); 
+        configuration.addAllowedHeader("*"); 
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new 
+         UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
