@@ -63,6 +63,8 @@ public class HomeController {
 	@PostMapping("/register")
 	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails) throws UserHander {
 		
+		System.out.println(udetails);
+		
 		ULoginDetails newRegister = details.newRegister(udetails);
 		
 		return  ResponseEntity.ok(newRegister);
@@ -141,7 +143,7 @@ public class HomeController {
 	
 		return ResponseEntity.ok(up);
 		
-	}
+	}			
 		
 	
 	
