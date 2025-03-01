@@ -7,5 +7,7 @@ import com.example.demo.entity.ULoginDetails;
 
 @Repository
 public interface ULoginDetailsDao extends JpaRepository<ULoginDetails, Long>{
+	
 
+	
 }

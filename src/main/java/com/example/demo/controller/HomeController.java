@@ -83,14 +83,29 @@ public class HomeController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<Object>  login(@RequestBody ULoginDetails udetails) throws UserHander {
-	if(currentUser==null) {
-		currentUser = details.loginChack(udetails);
-		}
-	else{
-		throw new UserHander("User currently  logIn in Another Window");
-	}
+	
 		
-		return ResponseEntity.ok(currentUser);
+//		if(currentUser==null) {
+//		currentUser = details.loginChack(udetails);
+//		}
+//	else{
+//		throw new UserHander("User currently  logIn in Another Window");
+//	}
+//		
+//		return ResponseEntity.ok(currentUser);
+		
+		// create a Security logic in my class After that
+		System.out.println("this is the Login controller.....");
+		String varify = details.varify(udetails);
+		
+		if(varify.equals("fails")) {
+			return ResponseEntity.ok("Pleaase check the valid user Id ");
+		}
+		Map<String, Object> map= new HashMap<>();
+		map.put("token", varify);
+		map.put("user", currentUser);
+		
+		return ResponseEntity.ok(map);
 				
 	}
 	

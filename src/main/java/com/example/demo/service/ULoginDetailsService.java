@@ -8,6 +8,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.controller.HomeController;
@@ -17,13 +21,22 @@ import com.example.demo.globleHandler.UserHander;
 import com.example.demo.repository.ULoginDetailsDao;
 import com.example.demo.repository.UserBankDetailsDao;
 
+
+
 @Service
 public class ULoginDetailsService {
 	
 	@Autowired
 	private ULoginDetailsDao uLoginDao;
+	
 	@Autowired
 	private UserBankDetailsDao bankDetailDao;
+	
+	@Autowired
+	AuthenticationManager authManager;
+	
+	@Autowired
+	private JWTService jwtService;
 	
 		public ULoginDetails newRegister(ULoginDetails details) throws UserHander {
 			
@@ -156,6 +169,25 @@ public class ULoginDetailsService {
 			}
 			
 			System.out.println("All Data Are Refress");
+		}
+
+
+
+		public String varify(ULoginDetails udetails) {
+			
+			Authentication authenticate = 
+					authManager.authenticate(
+								new UsernamePasswordAuthenticationToken(udetails.getMobile(),udetails.getPassword()));
+			
+					
+						;
+	if(authenticate.isAuthenticated()) {
+		return jwtService.generateToken(Long.toString(udetails.getMobile()));
+	}		
+	
+	return "fails";
+			
+			
 		}
 		
 		
