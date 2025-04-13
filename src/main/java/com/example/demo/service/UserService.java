@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.Users;
@@ -19,7 +21,7 @@ public class UserService {
 			return userDao.save(user);
 		}
 		
-		
+		@Cacheable(value = "Users" , key = "#id")
 		public Optional<Users> getUserById(int id) throws UserHander {
 			Optional<Users> byId = userDao.findById(id);
 			if(byId.isEmpty()) {
@@ -28,12 +30,12 @@ public class UserService {
 			return userDao.findById(id);
 		}
 		
-		
+		@Cacheable(value = "Users" )
 		public List<Users> getAllUsers() {
 			return userDao.findAll();
 		}
 		
-		
+		@CachePut(value = "Users", key = "#user.id")
 		public Users updateUser(Users user) {
 			return userDao.saveAndFlush(user);
 		}
@@ -42,6 +44,8 @@ public class UserService {
 		public void userRefer(Long mobile) {
 			
 		}
+		
+		@Cacheable(value = "Users" , key = "#mobile")
 		public Users findUserByMobile(Long mobile) {
 			
 			List<Users> list= userDao.findByMobile(mobile);
