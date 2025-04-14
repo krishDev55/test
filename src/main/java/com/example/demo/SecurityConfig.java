@@ -46,6 +46,9 @@ public class SecurityConfig {
 				.csrf(customizer-> customizer.disable())
 				.authorizeHttpRequests(request-> request
 												.requestMatchers(
+														        "/v1/hac/getlecturesByCourseId/{}",
+																"/v1/hac/getAllCourse",
+																"/v1/hac/login",
 																"/v1/app/login",
 																"/v1/app/register",
 																"/v1/app/SendOtp/{}").permitAll()
@@ -96,7 +99,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("https://actshopmoney.netlify.app"); 
-//        configuration.addAllowedOrigin("http://127.0.0.1:5500"); 
+        configuration.addAllowedOrigin("http://127.0.0.1:5500"); 
         configuration.addAllowedMethod("*"); 
         configuration.addAllowedHeader("*"); 
         configuration.setAllowCredentials(true);

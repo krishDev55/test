@@ -35,7 +35,7 @@ public class JWTService  {
 	 }
 	 
 	 public String generateToken(String userName) {
-		 System.out.println("inside genrate token method : "+userName);
+//		 System.out.println("inside genrate token method : "+userName);
 			Map<String, Object> claims= new HashMap<>();
 	    return Jwts.builder()
 	    		.addClaims(claims)

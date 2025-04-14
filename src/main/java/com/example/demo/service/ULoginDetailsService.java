@@ -174,7 +174,6 @@ public class ULoginDetailsService {
 
 
 		public String varify(ULoginDetails udetails) {
-			
 			Authentication authenticate = 
 					authManager.authenticate(
 								new UsernamePasswordAuthenticationToken(udetails.getMobile(),udetails.getPassword()));

@@ -101,11 +101,11 @@ public class HomeController {
 	public ResponseEntity<Object>  login(@RequestBody ULoginDetails udetails,HttpSession session1) throws UserHander {
 		session = session1;
 		String username = Long.toString(udetails.getMobile());
-
-		if (ckeckSession(username)) {
-			return ResponseEntity.ok("User is Allready Login");
-		}
-			else {
+System.out.println("This si test");
+//		if (ckeckSession(username)) {
+//			return ResponseEntity.ok("User is Allready Login");
+//		}
+//			else {
 					String varify = details.varify(udetails);
 			
 					if (varify.equals("fails")) {
@@ -121,9 +121,9 @@ public class HomeController {
 					map.put("token", varify);
 					map.put("user", udetails);
 					return ResponseEntity.ok(map);
-			}				
+//			}				
 	}
-	
+	 
 	@GetMapping("/logOut/{mobile}")
 	public ResponseEntity<Object>  logOut(@PathVariable Long mobile) throws UserHander {
 		Map<String, Object> map= new HashMap<>();
