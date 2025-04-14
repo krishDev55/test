@@ -94,9 +94,15 @@ public class HackController {
 	@SuppressWarnings("unchecked")
 	@PostMapping("/login")
 	public Map<String,Object> login(@RequestBody User user) {
-		System.out.println("UserName "+user.getEmail() + " Password : "+user.getPassword());
-				String url="https://newdeploysuccessmarathi.onrender.com/api/user/login";	
-				ResponseEntity<Map> map = restTemplate.postForEntity(url,  user, Map.class);
+	System.out.println("UserName "+user.getEmail() + " Password : "+user.getPassword());
+				String url="https://newdeploysuccessmarathi.onrender.com/api/user/login";
+				ResponseEntity<Map> map=null;
+				try {
+					 map= restTemplate.postForEntity(url,  user, Map.class);
+					
+				} catch (Exception e) {
+					System.out.println(user.getEmail()+" this emailNot p:  "+user.getPassword() );
+				}
 				String message = (String)map.getBody().get("message");
 
 			@SuppressWarnings("unchecked")
