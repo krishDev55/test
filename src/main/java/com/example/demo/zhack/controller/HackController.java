@@ -40,12 +40,9 @@ public class HackController {
 	@SuppressWarnings("unchecked")
 	@GetMapping("/getAllCourse")
 	public List<Course> getAllCourse() {
-		System.out.println("inside method  chack  : ");
 		String url="https://newdeploysuccessmarathi.onrender.com/api/getAllCourses";
 		@SuppressWarnings("unchecked")
 		Map<String, Object> obj= restTemplate.getForObject(url, Map.class);
-		System.out.println("Total list is : "+obj);
-		System.out.println("msg: "+obj.get("message"));
 		
 		return (List<Course>)obj.get("course");
 	}
@@ -54,7 +51,7 @@ public class HackController {
 	@GetMapping("/getlecturesByCourseId/{id}")
 	public Map<String, Object> getMethodName(@PathVariable String id,@RequestHeader String token) throws ClientAbortException {
 		Map<String, Object> map= new HashMap<>();
-		System.out.println("inside method  chack  : ");
+		
 		String url="https://newdeploysuccessmarathi.onrender.com/api/getlecturesByCourseId/"+id;        
 		HttpHeaders headers= new HttpHeaders();
 		headers.set("token",token);
@@ -82,7 +79,6 @@ public class HackController {
 				
 		Map<String,Object> body = ex.getBody();
 		String massage =(String) body.get("message");
-		System.out.println("inside method  chack 2 : ");
 		map.put("message", massage);
 		map.put("lectures", (List<Lecture>)body.get("lectures"));
 				
