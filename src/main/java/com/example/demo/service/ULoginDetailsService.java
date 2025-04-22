@@ -71,6 +71,9 @@ public class ULoginDetailsService {
 				}
 				else{
 					save = uLoginDao.save(details);
+					UserBankDetails bank = new UserBankDetails();
+					bank.setMobile(details.getMobile());
+							saveBankDetails(bank);
 					}
 			}
 			else {
@@ -138,6 +141,7 @@ public class ULoginDetailsService {
 			uLoginDetails.setTotayEarn(totalEarn);
 			uLoginDetails.setOrderCount(orderCount);
 			
+			System.out.println("Login : "+uLoginDetails);
 			return uLoginDao.save(uLoginDetails);
 		}
 
@@ -176,9 +180,7 @@ public class ULoginDetailsService {
 		public String varify(ULoginDetails udetails) {
 			Authentication authenticate = 
 					authManager.authenticate(
-								new UsernamePasswordAuthenticationToken(udetails.getMobile(),udetails.getPassword()));
-			
-					
+								new UsernamePasswordAuthenticationToken(udetails.getMobile(),udetails.getPassword()));			
 						;
 	if(authenticate.isAuthenticated()) {
 		String string = Long.toString(udetails.getMobile());

@@ -54,22 +54,17 @@ public class HomeController {
 	}
 	
 
-		@Autowired
-		ULoginDetailsService details;
+		@Autowired ULoginDetailsService details;
 		
-		@Autowired
-		private UserService userService;
+		@Autowired private UserService userService;
 		
-		@Autowired
-		private ProductService productService;
+		@Autowired private ProductService productService;
 	
 		public static  boolean invaite;
 		
 //		public static ULoginDetails loginDatailsById;
 //		public static ULoginDetails currentUser =null;
-		@Autowired
-		static public HttpSession session;
-		
+
 		public static  String  OTP=null;
 		
 		@GetMapping("/test")
@@ -97,31 +92,26 @@ public class HomeController {
 	
 	
 	@PostMapping("/login")
-	
-	public ResponseEntity<Object>  login(@RequestBody ULoginDetails udetails,HttpSession session1) throws UserHander {
-		session = session1;
+	public ResponseEntity<Map<String, Object>>  login(@RequestBody ULoginDetails udetails) throws UserHander {
 		String username = Long.toString(udetails.getMobile());
-System.out.println("This si test");
-//		if (ckeckSession(username)) {
-//			return ResponseEntity.ok("User is Allready Login");
-//		}
-//			else {
-					String varify = details.varify(udetails);
+				System.out.println("This si test");
+				Map<String, Object> map = new HashMap<>();
+
+					String token = details.varify(udetails);
 			
-					if (varify.equals("fails")) {
-						return ResponseEntity.ok("Pleaase check the valid user Id ");
+					if (token.equals("fails")) {
+						map.put("varify", false);
+						return  new ResponseEntity<Map<String, Object>>(map, HttpStatusCode.valueOf(402));
 					}
 			
-					Map<String, Object> map = new HashMap<>();
-					String mobile = Long.toString(udetails.getMobile());
-					
-					String id = session.getId();
-					System.out.println("session id : " + id);
-					session.setAttribute(mobile, udetails);
-					map.put("token", varify);
-					map.put("user", udetails);
+					ULoginDetails userDetails = details.getLoginDatailsById(udetails.getMobile()).get();
+//					String mobile = Long.toString(udetails.getMobile());
+					map.put("varify", true);
+					map.put("token", token);
+					map.put("user", userDetails);
+					System.out.println("map is : "+map);
 					return ResponseEntity.ok(map);
-//			}				
+			
 	}
 	 
 	@GetMapping("/logOut/{mobile}")
@@ -130,14 +120,9 @@ System.out.println("This si test");
 		System.out.println("inside log out method ");
 			String mo1=Long.toString(mobile);
 	
-			if(ckeckSession(mo1)) {
-			session.removeAttribute(mo1);
 			map.put("msg", "user logout successfully");
-			
 			System.out.println("user logout successfully");
 			return ResponseEntity.ok(map);
-		}
-			throw new UserHander("please logIn First");
 		
 				
 	}
@@ -154,7 +139,11 @@ System.out.println("This si test");
 	@GetMapping("/getbankDByMobile/{mobile}")
 	public ResponseEntity<Object>  getBankDetailsByMobile(@PathVariable Long mobile) throws UserHander  {
 		System.out.println(mobile);
+		Map<String, Object> map= new HashMap<>();
 		UserBankDetails saveBDetails = details.findBandDetailsByMobile(mobile);
+		System.out.println(saveBDetails);
+		map.put("bnk", saveBDetails);
+		map.put("varify", true);
 		return ResponseEntity.ok(saveBDetails);
 				
 	}
@@ -242,8 +231,6 @@ System.out.println("This si test");
 	@GetMapping("/getProduct")
 	public ResponseEntity<Map<String, Products>> getProduct(){
 		
-		String id = session.getId();
-		System.out.println("session id : "+id);
 		Products product = productService.getProduct();
 		Map<String, Products> map= new HashMap<>();
 		map.put("products", product);
@@ -280,17 +267,6 @@ System.out.println("This si test");
 	}
 	
 	
-	
-	
-	public boolean ckeckSession(String mobile) {
-//		  ULoginDetails
-		ULoginDetails attribute = (ULoginDetails)session.getAttribute(mobile);
-		if(attribute!=null) {
-			return true;
-		}
-		return false;
-			
-		}
 }
 
 

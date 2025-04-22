@@ -8,6 +8,7 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class UserBankDetails {
 	@Id
+	private Long mobile;
 	private String accountNumber;
     private String accountHolderName;
     private String bankName;
@@ -17,7 +18,6 @@ public class UserBankDetails {
 //    @OneToOne
 //    private ULoginDetails ulLoginDetails;
     
-    private Long mobile;
     
     
     
