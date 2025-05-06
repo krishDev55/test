@@ -61,7 +61,7 @@ public class HomeController {
 	    public String generateInvite(@RequestParam String mobile) {
 	        String code = inviteCodeService.generateInviteCode(mobile);
 	   	 System.out.println("code is : "+code);
-	        return "http://localhost:8081/v1/invite/register?invite=" + code;
+	        return  code;
 	    }
 
 		@Autowired ULoginDetailsService details;
