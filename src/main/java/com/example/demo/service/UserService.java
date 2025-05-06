@@ -22,7 +22,7 @@ public class UserService {
 		}
 		
 		@Cacheable(value = "Users" , key = "#id")
-		public Optional<Users> getUserById(int id) throws UserHander {
+		public Optional<Users> getUserById(long id) throws UserHander {
 			Optional<Users> byId = userDao.findById(id);
 			if(byId.isEmpty()) {
 				throw  new UserHander( id + " : this id Not Present in database");

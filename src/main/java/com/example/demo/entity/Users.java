@@ -11,21 +11,12 @@ public class Users {
 	
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private long mobile;
+	
 	private String firstName;
 	private String lastName;
-	private long mobile;
 	private String email;
 
-	
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getFirstName() {
 		return firstName;
 	}
@@ -50,6 +41,12 @@ public class Users {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	@Override
+	public String toString() {
+		return "Users [ firstName=" + firstName + ", lastName=" + lastName + ", mobile=" + mobile
+				+ ", email=" + email + "]";
+	}
+	
 	
 	
 	

@@ -35,8 +35,7 @@ public class UserController {
 	public ResponseEntity<Users> saveUser(@RequestBody Users user) {
 		
 		return ResponseEntity.ok(userService.saveUser(user));
-	}
-	
+	}	
 	@GetMapping("/getuser/{id}")
 	public ResponseEntity<Object> getUserById(@PathVariable int id) throws UserHander {
 		Optional<Users> userById = userService.getUserById(id);
@@ -46,8 +45,9 @@ public class UserController {
 	
 	@GetMapping("/getUserByMobile/{mobile}")
 	public ResponseEntity<Object> getUserByMobileNo(@PathVariable Long mobile) throws UserHander {
+		System.out.println("valide texting ....");
 	Users users = userService.findUserByMobile(mobile);
-		
+		System.out.println("user is : "+users);
 		 return ResponseEntity.ok(users);
 	}
 	

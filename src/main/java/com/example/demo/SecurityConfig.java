@@ -50,7 +50,12 @@ public class SecurityConfig {
 																"/v1/hac/getAllCourse",
 																"/v1/hac/login",
 																"/v1/app/login",
+																"/v1/app/generate",
+																"/v1/invite/register",
+																
 																"/v1/app/register",
+																"/v1/app/registerRef",
+																
 																"/v1/app/SendOtp/{}").permitAll()
 												.anyRequest().authenticated())
 				.httpBasic(Customizer.withDefaults())

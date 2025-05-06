@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.common.GenrateOTP;
@@ -36,6 +38,7 @@ import com.example.demo.entity.UserBankDetails;
 import com.example.demo.entity.Users;
 import com.example.demo.entity.vo.Products;
 import com.example.demo.globleHandler.UserHander;
+import com.example.demo.service.InviteCodeService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.ULoginDetailsService;
 import com.example.demo.service.UserService;
@@ -45,7 +48,8 @@ import com.example.demo.service.UserService;
 @RequestMapping("/v1/app")
 @CrossOrigin()
 public class HomeController {
-	
+	 @Autowired private InviteCodeService inviteCodeService;
+
 	BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
 	
 	@GetMapping("/")
@@ -53,6 +57,12 @@ public class HomeController {
 		return "This is Home Page ...!!! "+req.getSession().getId();
 	}
 	
+	 @GetMapping("/generate")
+	    public String generateInvite(@RequestParam String mobile) {
+	        String code = inviteCodeService.generateInviteCode(mobile);
+	   	 System.out.println("code is : "+code);
+	        return "http://localhost:8081/v1/invite/register?invite=" + code;
+	    }
 
 		@Autowired ULoginDetailsService details;
 		
@@ -74,13 +84,36 @@ public class HomeController {
 		}
 		
 	@PostMapping("/register")
-	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails) throws UserHander {
+	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails
+					,@RequestHeader String email	) throws UserHander {
 			udetails.setPassword(encoder.encode(udetails.getPassword()));
-		ULoginDetails newRegister = details.newRegister(udetails);
-		
+		   ULoginDetails newRegister = details.newRegister(udetails,email);
+		return  ResponseEntity.ok(newRegister);
+	}
+	
+	@PostMapping("/registerRef")
+	public ResponseEntity<Object>  register(@RequestBody ULoginDetails udetails
+					,@RequestHeader String email,@RequestHeader String refCode) throws UserHander {
+			udetails.setPassword(encoder.encode(udetails.getPassword()));
+			Long key = inviteCodeService.getKey(refCode);
+		ULoginDetails newRegister = details.newRegister(udetails,email);
+		//referExtra Logic  
+		ULoginDetails referUser = details.getLoginDatailsById(key).get();
+		referUser.setBonus(referUser.getBonus()+30);
+		List<Long> refer = referUser.getRefer();
+		 if(refer==null) {
+			 	refer=new ArrayList<>();
+		 }
+			refer.add(newRegister.getMobile());
+		referUser.setRefer(refer);
+		 details.updateLoginUser(referUser);
 		return  ResponseEntity.ok(newRegister);
 				
 	}
+	
+	
+	
+	
 	@GetMapping("/invait/{mobile}/xyz")
 	public ResponseEntity<Object> invaitUser(@PathVariable Long mobile){
 		System.out.println(mobile);

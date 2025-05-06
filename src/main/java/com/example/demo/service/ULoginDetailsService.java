@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.controller.HomeController;
 import com.example.demo.entity.ULoginDetails;
 import com.example.demo.entity.UserBankDetails;
+import com.example.demo.entity.Users;
 import com.example.demo.globleHandler.UserHander;
 import com.example.demo.repository.ULoginDetailsDao;
 import com.example.demo.repository.UserBankDetailsDao;
@@ -32,13 +33,13 @@ public class ULoginDetailsService {
 	@Autowired
 	private UserBankDetailsDao bankDetailDao;
 	
-	@Autowired
-	AuthenticationManager authManager;
+	@Autowired AuthenticationManager authManager;
+	@Autowired private UserService userService;
 //	
 	@Autowired
 	private JWTService jwtService;
 	
-		public ULoginDetails newRegister(ULoginDetails details) throws UserHander {
+		public ULoginDetails newRegister(ULoginDetails details,String email) throws UserHander {
 			
 			Optional<ULoginDetails> uLogin=null;
 			ULoginDetails save=null;
@@ -50,6 +51,7 @@ public class ULoginDetailsService {
 					catch (NoSuchElementException e) {
 						throw new NoSuchElementException("No value noValue present");
 					}
+					
 					
 			if(uLogin.isEmpty()) {
 				details.setBonus(50.00);
@@ -74,6 +76,12 @@ public class ULoginDetailsService {
 					UserBankDetails bank = new UserBankDetails();
 					bank.setMobile(details.getMobile());
 							saveBankDetails(bank);
+						Users user= new Users();
+						user.setMobile(details.getMobile());
+						user.setEmail(email);
+						System.out.println("Email is : "+email);
+							userService.saveUser(user);	
+							
 					}
 			}
 			else {

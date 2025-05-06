@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.UserBankDetails;
 
 @Repository
-public interface UserBankDetailsDao extends JpaRepository<UserBankDetails, String> {
+public interface UserBankDetailsDao extends JpaRepository<UserBankDetails, Long> {
 
 	public List<UserBankDetails> findByMobile(Long mobile);
 }
