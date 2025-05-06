@@ -28,13 +28,13 @@ public class PageController {
 	 @GetMapping ("/register")
 	 
 	    public String showRegisterPage(@RequestParam String invite) {
-		 System.out.println("code is : "+invite);
-//		 return ResponseEntity.ok(Map.of(
-//		            "redirect", true,
-//		            "targetUrl", "http://127.0.0.1:5500/invite/register.html ",
-//		            "message", "You are being redirected"
-//		        ));
-		 return "redirect:http://127.0.0.1:5500/invite/register.html?massage="+invite; // refers to register.html in templates
+//		 System.out.println("code is : "+invite);
+////		 return ResponseEntity.ok(Map.of(
+////		            "redirect", true,
+////		            "targetUrl", "http://127.0.0.1:5500/invite/register.html ",
+////		            "message", "You are being redirected"
+////		        ));
+		 return "redirect:https://actshopmoney.netlify.app/invite/register.html?massage="+invite; // refers to register.html in templates
 	    }
 	 
 }
