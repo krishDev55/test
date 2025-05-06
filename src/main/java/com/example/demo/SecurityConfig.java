@@ -46,6 +46,7 @@ public class SecurityConfig {
 				.csrf(customizer-> customizer.disable())
 				.authorizeHttpRequests(request-> request
 												.requestMatchers(
+														        "/v1/app/test",
 														        "/v1/hac/getlecturesByCourseId/{}",
 																"/v1/hac/getAllCourse",
 																"/v1/hac/login",
