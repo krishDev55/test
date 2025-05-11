@@ -21,6 +21,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/v1/invite")
 public class PageController {
+	String host="http://127.0.0.1:5500";
+//	String host="https://actshopmoney.netlify.app";
 	  @Autowired
 	    private InviteCodeService inviteCodeService;
 
@@ -34,7 +36,7 @@ public class PageController {
 ////		            "targetUrl", "http://127.0.0.1:5500/invite/register.html ",
 ////		            "message", "You are being redirected"
 ////		        ));
-		 return "redirect:https://actshopmoney.netlify.app/invite/register.html?massage="+invite; // refers to register.html in templates
+		 return "redirect:"+host+"/invite/register.html?massage="+invite; // refers to register.html in templates
 	    }
 	 
 }

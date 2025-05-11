@@ -43,4 +43,5 @@ public class MyUserDetailsService  implements UserDetailsService
 		return new LoginDetailsPrincipal(uLoginDetails);
 	}
 
+	
 }

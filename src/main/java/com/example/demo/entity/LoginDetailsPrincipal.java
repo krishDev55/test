@@ -34,7 +34,6 @@ public class LoginDetailsPrincipal  implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		System.out.println("get password method ..");
 		return uloginDetails.getPassword();
 	}
 
@@ -42,7 +41,6 @@ public class LoginDetailsPrincipal  implements UserDetails {
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		String string = Long.toString(uloginDetails.getMobile());
-		System.out.println("get userName method .."+string);
 		return string;
 	}
 

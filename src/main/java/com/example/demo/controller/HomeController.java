@@ -60,7 +60,6 @@ public class HomeController {
 	 @GetMapping("/generate")
 	    public String generateInvite(@RequestParam String mobile) {
 	        String code = inviteCodeService.generateInviteCode(mobile);
-	   	 System.out.println("code is : "+code);
 	        return  code;
 	    }
 
@@ -116,8 +115,6 @@ public class HomeController {
 	
 	@GetMapping("/invait/{mobile}/xyz")
 	public ResponseEntity<Object> invaitUser(@PathVariable Long mobile){
-		System.out.println(mobile);
-		
 //		invaite=true;
 //		 loginDatailsById = details.getLoginDatailsById(mobile).get();					
 		return  ResponseEntity.ok(" invait link Open");
@@ -127,34 +124,29 @@ public class HomeController {
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, Object>>  login(@RequestBody ULoginDetails udetails) throws UserHander {
 		String username = Long.toString(udetails.getMobile());
-				System.out.println("This si test");
+				System.out.println("UserName : "+username +" --  password : "+udetails.getPassword());
 				Map<String, Object> map = new HashMap<>();
-
 					String token = details.varify(udetails);
-			
 					if (token.equals("fails")) {
 						map.put("varify", false);
 						return  new ResponseEntity<Map<String, Object>>(map, HttpStatusCode.valueOf(402));
 					}
-			
 					ULoginDetails userDetails = details.getLoginDatailsById(udetails.getMobile()).get();
 //					String mobile = Long.toString(udetails.getMobile());
 					map.put("varify", true);
 					map.put("token", token);
 					map.put("user", userDetails);
-					System.out.println("map is : "+map);
 					return ResponseEntity.ok(map);
-			
 	}
 	 
+	
+	
 	@GetMapping("/logOut/{mobile}")
 	public ResponseEntity<Object>  logOut(@PathVariable Long mobile) throws UserHander {
 		Map<String, Object> map= new HashMap<>();
-		System.out.println("inside log out method ");
 			String mo1=Long.toString(mobile);
 	
 			map.put("msg", "user logout successfully");
-			System.out.println("user logout successfully");
 			return ResponseEntity.ok(map);
 		
 				
@@ -162,7 +154,6 @@ public class HomeController {
 
 	@PostMapping("/addBankDetails")
 	public ResponseEntity<Object>  saveDetails(@RequestBody UserBankDetails bankDetails)  {
-		System.out.println(bankDetails);
 		UserBankDetails saveBDetails = details.saveBankDetails(bankDetails);
 		return ResponseEntity.ok(saveBDetails);
 				
@@ -171,10 +162,8 @@ public class HomeController {
 	
 	@GetMapping("/getbankDByMobile/{mobile}")
 	public ResponseEntity<Object>  getBankDetailsByMobile(@PathVariable Long mobile) throws UserHander  {
-		System.out.println(mobile);
 		Map<String, Object> map= new HashMap<>();
 		UserBankDetails saveBDetails = details.findBandDetailsByMobile(mobile);
-		System.out.println(saveBDetails);
 		map.put("bnk", saveBDetails);
 		map.put("varify", true);
 		return ResponseEntity.ok(saveBDetails);
@@ -184,20 +173,14 @@ public class HomeController {
 	
 	@PutMapping("/updateUser/{id}")
 	public ResponseEntity<Object> updateUserById(ULoginDetails user){
-		
-		ULoginDetails up =details.updateLoginUser(user);
-	
-		return ResponseEntity.ok(up);
+		return ResponseEntity.ok(details.updateLoginUser(user));
 		
 	}
 	
+	
 	@GetMapping("/getLoginUser/{mobile}")
 	public ResponseEntity<Object> getLoginUserById(@PathVariable Long mobile){
-		
-		System.out.println("thsi number is :"+ mobile);
-		Optional<ULoginDetails> up =details.getLoginDatailsById(mobile);
-	
-		return ResponseEntity.ok(up);
+		return ResponseEntity.ok(details.getLoginDatailsById(mobile));
 		
 	}
 		
@@ -207,23 +190,20 @@ public class HomeController {
 	@GetMapping("/SendOtp/{email}")
 	public ResponseEntity<Map<String, String>> sendOtp(@PathVariable String email) {
 		Map<String, String> map= new HashMap<>();
-		
 		OTP = GenrateOTP.otp();
-		
 		Gmail.send(email, "user Text", OTP);
 		System.out.println("OTP is : "+OTP);
 		map.put("massage", "Sent Otp" + email + "Your Email Address");
 		map.put("otp", OTP);
-		
 		return ResponseEntity.ok(map);
 		
 	}
+	
+	
 	@GetMapping("/varifyOtp/{otp}")
 	public ResponseEntity<Map<String,String>> otpVarifiy(@PathVariable String otp) throws UserHander {
-		System.out.println("Varify Otp method callllllll :"+otp);
 		Map<String, String> map= new HashMap<>();
 		try {
-			
 			if(otp.equals(OTP)) {
 			    OTP=null;
 			    map.put("ok", "OTP varify seccessfully");
@@ -233,26 +213,22 @@ public class HomeController {
 				map.put("error", "Wrong OTP ... Please Enter Valid OTP");
 				return ResponseEntity.badRequest().body(map);
 			}
-			
 		}
 		catch (Exception e) {
-			
 			throw new  UserHander(" Null Pointer Exception....!!!!!");
 		}	
 	}
 
-		
+
+	
 	@PutMapping("/updateBonus/{mobile}/{bonus}/{todayEarn}/{orderCount}")
 	public  ULoginDetails updateLoginUserByBonus(@PathVariable Long mobile,
 												@PathVariable double bonus,
 												@PathVariable double todayEarn,
 												@PathVariable int orderCount) {
-		
-		
-		System.out.println("mobile is : "+mobile);
-		System.out.println("bonus is : "+bonus);
 		return details.updateLoginUserByBonus(mobile, bonus,todayEarn,orderCount);
 	}
+	
 	
 	
 	@PutMapping("/RefreshIncome")
@@ -289,7 +265,6 @@ public class HomeController {
 		// create a order 
 		Order order = client.orders.create(orderRequest);
 		
-		System.out.println("Order is create : "+order);
 		
 		JSONObject notes = new JSONObject();
 		

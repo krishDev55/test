@@ -120,9 +120,9 @@ public class ULoginDetailsService {
 		public UserBankDetails saveBankDetails(UserBankDetails bankDetails) {
 			
 			UserBankDetails bankDetail = bankDetailDao.saveAndFlush(bankDetails);
-			System.out.println("After Bank Details save");
 			return bankDetail;
 		}
+		
 		
 		public List<UserBankDetails> findByMobile(Long mobile) {
 			List<UserBankDetails> bankDetail = bankDetailDao.findByMobile(mobile);
@@ -149,7 +149,6 @@ public class ULoginDetailsService {
 			uLoginDetails.setTotayEarn(totalEarn);
 			uLoginDetails.setOrderCount(orderCount);
 			
-			System.out.println("Login : "+uLoginDetails);
 			return uLoginDao.save(uLoginDetails);
 		}
 
@@ -169,18 +168,13 @@ public class ULoginDetailsService {
 		public void incomeExchange() {
 			List<ULoginDetails> all = uLoginDao.findAll();
 			Iterator<ULoginDetails> itr = all.iterator();
-			
 			while(itr.hasNext()) {
 				ULoginDetails next = itr.next();
 				next.setYesterdayEarn(next.getTotayEarn());
 				next.setTotayEarn(0);
 				next.setOrderCount(0);
-				
 				 uLoginDao.save(next);
-				
 			}
-			
-			System.out.println("All Data Are Refress");
 		}
 
 
@@ -199,6 +193,17 @@ public class ULoginDetailsService {
 	return "fails";
 //			
 //			
+		}
+
+
+
+		public List<Long> findReferByMobile(long mobile) {
+			ULoginDetails details = getLoginDatailsById(mobile).get();
+			List<Long> refer = details.getRefer();
+			if(refer!=null) {
+				return refer;
+			}
+			return new ArrayList<Long>();
 		}
 		
 		

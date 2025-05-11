@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Users;
+import com.example.demo.entity.vo.UserAndLoginDetailsCombine;
 import com.example.demo.globleHandler.UserHander;
+import com.example.demo.service.ULoginDetailsService;
 import com.example.demo.service.UserService;
 
 @RestController
@@ -23,31 +25,30 @@ import com.example.demo.service.UserService;
 
 @RequestMapping("/v1/user/")
 public class UserController {
-	@Autowired
-	private UserService userService;
+	@Autowired private UserService userService;
+	@Autowired private ULoginDetailsService uLoginDetailsService;
 	
 	@GetMapping("/getall")
 	public ResponseEntity<List<Users>> getAllUsers() {
-		
 		return ResponseEntity.ok(userService.getAllUsers());
 	}
+	
+	
 	@PostMapping("/saveUser")
 	public ResponseEntity<Users> saveUser(@RequestBody Users user) {
-		
 		return ResponseEntity.ok(userService.saveUser(user));
 	}	
+	
+	
 	@GetMapping("/getuser/{id}")
 	public ResponseEntity<Object> getUserById(@PathVariable int id) throws UserHander {
 		Optional<Users> userById = userService.getUserById(id);
-		
 		 return ResponseEntity.ok(userById);
 	}
 	
 	@GetMapping("/getUserByMobile/{mobile}")
 	public ResponseEntity<Object> getUserByMobileNo(@PathVariable Long mobile) throws UserHander {
-		System.out.println("valide texting ....");
 	Users users = userService.findUserByMobile(mobile);
-		System.out.println("user is : "+users);
 		 return ResponseEntity.ok(users);
 	}
 	
@@ -55,34 +56,38 @@ public class UserController {
 	
 	@PutMapping("/updateUser")
 	public ResponseEntity<Object> updateUser(@RequestBody Users user){
-		
 		Users updateUser=userService.updateUser(user);
 		return ResponseEntity.ok(updateUser);
 		
 	}
-	@PutMapping("/updateUser/{id}")
-	public ResponseEntity<Object> updateUserById(@PathVariable int id, @RequestBody Users user){
-		
+	@PutMapping("/updateUser/{mobile}")
+	public ResponseEntity<Object> updateUserById(@PathVariable Long mobile, @RequestBody Users user){
 		Users updateUser=null;
 		try {
-			updateUser = userService.getUserById(id).get();
+			updateUser = userService.getUserById(mobile).get();
 			if(user.getFirstName()!=null) {updateUser.setFirstName(user.getFirstName());} ;
 			if(user.getEmail()!=null) {updateUser.setEmail(user.getEmail());} ;  
 			if(user.getLastName()!=null) {updateUser.setLastName(user.getLastName());} ;  
 			if(user.getMobile()!=0) {updateUser.setMobile(user.getMobile());} ;  
-			
 		} catch (UserHander e) {
 			e.setName("nullValue");
-			
 		}
-		
 		Users up=userService.updateUser(updateUser);
 		return ResponseEntity.ok(up);
-		
 	}
 	
+	@GetMapping("/getCartRefer/{mobile}")
+	public List<Long> getCartByMobileNo(@PathVariable long mobile){
+		return uLoginDetailsService.findReferByMobile(mobile);
+	}
 	
+
 	
+	@GetMapping("/getCombineData/{mobile}")
+	public UserAndLoginDetailsCombine getCombineUserOrLoginUserData(@PathVariable Long mobile) {
+		UserAndLoginDetailsCombine combineUserOrLoginUserData = userService.getCombineUserOrLoginUserData(mobile);
+		return combineUserOrLoginUserData;
+	}
 	
 	
 	

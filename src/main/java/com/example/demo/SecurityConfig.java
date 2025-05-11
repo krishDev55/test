@@ -53,7 +53,7 @@ public class SecurityConfig {
 																"/v1/app/login",
 																"/v1/app/generate",
 																"/v1/invite/register",
-																
+																"/v1/user/getCartRefer/{}",
 																"/v1/app/register",
 																"/v1/app/registerRef",
 																
