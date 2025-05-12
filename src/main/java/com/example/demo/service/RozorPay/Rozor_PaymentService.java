@@ -57,7 +57,7 @@ public class Rozor_PaymentService {
 			List<Map<String, Object>> list = ((List<Map<String, Object>>) ex.getBody()
 													.get("items"))
 													.stream()
-													.filter(e->((String)(e.get("email"))).equals(email))
+													.filter(e->((String)(e.get("email"))).equalsIgnoreCase(email))
 													.collect(Collectors.toList());
 			return list;
 		
@@ -76,7 +76,7 @@ public class Rozor_PaymentService {
 			List<Map<String, Object>> list = ((List<Map<String, Object>>) ex.getBody()
 													.get("items"))
 													.stream()
-													.filter(e->((String)(e.get("contact"))).equals(mobile))
+													.filter(e->((String)(e.get("contact"))).equalsIgnoreCase(mobile))
 													.collect(Collectors.toList());
 			return list;
 	}
