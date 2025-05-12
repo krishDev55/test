@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -21,10 +22,10 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/v1/invite")
 public class PageController {
-	String host="http://127.0.0.1:5500";
-//	String host="https://actshopmoney.netlify.app";
-	  @Autowired
-	    private InviteCodeService inviteCodeService;
+	@Value("${Access-Control-Allow-Origin}")
+		public String host;
+	
+	  @Autowired private InviteCodeService inviteCodeService;
 
 
 	 @GetMapping ("/register")

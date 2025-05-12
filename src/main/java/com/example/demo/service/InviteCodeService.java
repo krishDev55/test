@@ -4,44 +4,56 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.demo.entity.ReferCodeSave;
+import com.example.demo.repository.ReferCodeSaveRepo;
 
 @Service
 public class InviteCodeService {
 
-	public static final Map<Long, String> inviteCodes = new HashMap<>();
+	@Autowired ReferCodeSaveRepo referCodeRepo;
 
-    public String generateInviteCode(String mobile) {
+	public String generateInviteCode(String mobile) {
         String code = UUID.randomUUID().toString();
 		Long mob=Long.parseLong(mobile);
-        if(inviteCodes.containsKey(mob)) {
-        	return inviteCodes.get(mob);   //Always return older value if key are Present 
+		String code1 = getRCodeByMobile(mob);
+		
+        if(code1!=null) {
+        	return code1;   //Always return older value if key are Present 
         }
         else {
-        	inviteCodes.put(mob, code); // Store the new Key and Value
-        	
+        	saveReferCode(new ReferCodeSave(mob, code)); // Store the new Key and Value
         }
         return code;      // return the  new generated value
     }
 
     public Long getKey(String value) {
-    	if(inviteCodes.containsValue(value)) {
-    		Long key = inviteCodes.keySet()
-    								.stream()
-    								.filter(e-> inviteCodes.get(e).equals(value))
-    								.findAny()
-    								 .get();
-    		return key;
+    	return referCodeRepo.findReferCodeSaveByReferCode(value);
     	}
-    	
-//        return inviteCodes.containsKey(code) && !inviteCodes.get(code);
-    	
-    	return null;
-    }
+ 
 
     public void markAsUsed(String code) {
 //        inviteCodes.put(code, true);
     	
     }
 	
+    public ReferCodeSave getReferCodeByMobile(Long mobile) {
+    	return referCodeRepo.findById(mobile).get();
+    }
+    
+    public String getRCodeByMobile(Long mobile) {
+    	try {
+    		return referCodeRepo.findById(mobile).get().getReferCode();
+		} catch (Exception e) {
+			return null;
+		}
+    	
+    }
+    
+    public ReferCodeSave saveReferCode(ReferCodeSave referCodeSave) {
+    	return referCodeRepo.save(referCodeSave);
+    }
+    
 }
